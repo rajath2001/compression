@@ -7,6 +7,9 @@ def every_file_de(filename):
         if filename.endswith('.copy'):
             # print filename
             extract_dec(filename)
+        if filename.endswith('.keys'):
+            os.remove(filename)
+            
     else:
      os.chdir(filename)
      if(os.listdir(os.getcwd())):
@@ -17,8 +20,10 @@ def every_file_de(filename):
 
 def extract_dec(filename):
     #os.chdir(filename)
+    filename2 = filename[:-5:]
     file = open(filename,"r")
     file = file.read()
+    os.remove(filename) 
     array1 = bytearray(file) 
     # print array1
     arr=[i for i in array1]
@@ -28,10 +33,27 @@ def extract_dec(filename):
       string+="{0:0=8b}".format(i)
     filename = filename[:-5:]
     f2 = open(filename + ".keys","r")
-    x = f2.read().split(",")[:-1:]
-    list = [(int(x[i]),x[i+1]) for i in range(0,len(x),2) ]
+    # x = f2.read().split(",")[:-1:]
+    x = f2.read().split(",")
+    y = []
+    count = 0
+    for i in range(0,len(x)-1):
+        if(x[i] == '' and x[i+1] == ''):
+            print "hii"
+            y.append(",")
+            count+=1
+        else:
+            if(count==1):
+                count += 1
+            else:
+                y.append(x[i])
+    
+    print y
+    list = [(int(y[i]),y[i+1]) for i in range(0,len(y),2) ]
     # print list
-    print decode(string,list)
+    message = decode(string,list)
+    file_org = open(filename2 , "w")
+    file_org.write(message)
 
 def decode(code,list):
    count = 0
